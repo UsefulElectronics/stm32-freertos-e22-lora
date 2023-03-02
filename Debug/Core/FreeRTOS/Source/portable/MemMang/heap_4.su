@@ -1,0 +1,9 @@
+../Core/FreeRTOS/Source/portable/MemMang/heap_4.c:138:8:pvPortMalloc	48	static,ignoring_inline_asm
+../Core/FreeRTOS/Source/portable/MemMang/heap_4.c:289:6:vPortFree	32	static,ignoring_inline_asm
+../Core/FreeRTOS/Source/portable/MemMang/heap_4.c:342:8:xPortGetFreeHeapSize	4	static
+../Core/FreeRTOS/Source/portable/MemMang/heap_4.c:348:8:xPortGetMinimumEverFreeHeapSize	4	static
+../Core/FreeRTOS/Source/portable/MemMang/heap_4.c:354:6:vPortInitialiseBlocks	4	static
+../Core/FreeRTOS/Source/portable/MemMang/heap_4.c:360:8:pvPortCalloc	24	static
+../Core/FreeRTOS/Source/portable/MemMang/heap_4.c:379:13:prvHeapInit	24	static
+../Core/FreeRTOS/Source/portable/MemMang/heap_4.c:424:13:prvInsertBlockIntoFreeList	24	static
+../Core/FreeRTOS/Source/portable/MemMang/heap_4.c:487:6:vPortGetHeapStats	32	static

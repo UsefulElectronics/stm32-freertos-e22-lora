@@ -1,0 +1,10 @@
+../Core/FreeRTOS/Source/event_groups.c:148:24:xEventGroupCreate	16	static
+../Core/FreeRTOS/Source/event_groups.c:194:13:xEventGroupSync	56	static,ignoring_inline_asm
+../Core/FreeRTOS/Source/event_groups.c:317:13:xEventGroupWaitBits	72	static,ignoring_inline_asm
+../Core/FreeRTOS/Source/event_groups.c:473:13:xEventGroupClearBits	32	static,ignoring_inline_asm
+../Core/FreeRTOS/Source/event_groups.c:517:13:xEventGroupGetBitsFromISR	40	static,ignoring_inline_asm
+../Core/FreeRTOS/Source/event_groups.c:533:13:xEventGroupSetBits	64	static,ignoring_inline_asm
+../Core/FreeRTOS/Source/event_groups.c:629:6:vEventGroupDelete	32	static,ignoring_inline_asm
+../Core/FreeRTOS/Source/event_groups.c:677:6:vEventGroupSetBitsCallback	16	static
+../Core/FreeRTOS/Source/event_groups.c:686:6:vEventGroupClearBitsCallback	16	static
+../Core/FreeRTOS/Source/event_groups.c:693:19:prvTestWaitCondition	32	static
