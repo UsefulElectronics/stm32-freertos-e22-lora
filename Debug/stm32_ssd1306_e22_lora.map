@@ -925,7 +925,7 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x6a ./Core/Src/circ_buffer.o
  .debug_macro   0x0000000000000000      0x1df ./Core/Src/circ_buffer.o
  .debug_macro   0x0000000000000000       0x10 ./Core/Src/circ_buffer.o
- .debug_line    0x0000000000000000      0x601 ./Core/Src/circ_buffer.o
+ .debug_line    0x0000000000000000      0x602 ./Core/Src/circ_buffer.o
  .debug_str     0x0000000000000000     0x6eda ./Core/Src/circ_buffer.o
  .comment       0x0000000000000000       0x51 ./Core/Src/circ_buffer.o
  .debug_frame   0x0000000000000000       0xfc ./Core/Src/circ_buffer.o
@@ -961,17 +961,25 @@ Discarded input sections
  .text          0x0000000000000000        0x0 ./Core/Src/e22900t22d.o
  .data          0x0000000000000000        0x0 ./Core/Src/e22900t22d.o
  .bss           0x0000000000000000        0x0 ./Core/Src/e22900t22d.o
- .bss.hE22      0x0000000000000000      0x5d4 ./Core/Src/e22900t22d.o
+ .bss.hE22      0x0000000000000000      0xaa8 ./Core/Src/e22900t22d.o
  .text.e22_lora_init
                 0x0000000000000000       0x30 ./Core/Src/e22900t22d.o
- .debug_info    0x0000000000000000      0x271 ./Core/Src/e22900t22d.o
- .debug_abbrev  0x0000000000000000      0x104 ./Core/Src/e22900t22d.o
+ .text.e22_lora_transnit
+                0x0000000000000000       0x6c ./Core/Src/e22900t22d.o
+ .text.e22_lora_startReception
+                0x0000000000000000       0x24 ./Core/Src/e22900t22d.o
+ .text.e22_lora_receive
+                0x0000000000000000       0x28 ./Core/Src/e22900t22d.o
+ .text.e22_lora_manager
+                0x0000000000000000        0xe ./Core/Src/e22900t22d.o
+ .debug_info    0x0000000000000000      0x3e9 ./Core/Src/e22900t22d.o
+ .debug_abbrev  0x0000000000000000      0x18d ./Core/Src/e22900t22d.o
  .debug_aranges
-                0x0000000000000000       0x20 ./Core/Src/e22900t22d.o
- .debug_ranges  0x0000000000000000       0x10 ./Core/Src/e22900t22d.o
- .debug_macro   0x0000000000000000      0x146 ./Core/Src/e22900t22d.o
+                0x0000000000000000       0x40 ./Core/Src/e22900t22d.o
+ .debug_ranges  0x0000000000000000       0x30 ./Core/Src/e22900t22d.o
+ .debug_macro   0x0000000000000000      0x156 ./Core/Src/e22900t22d.o
  .debug_macro   0x0000000000000000      0xa78 ./Core/Src/e22900t22d.o
- .debug_macro   0x0000000000000000       0x10 ./Core/Src/e22900t22d.o
+ .debug_macro   0x0000000000000000       0x22 ./Core/Src/e22900t22d.o
  .debug_macro   0x0000000000000000       0x1e ./Core/Src/e22900t22d.o
  .debug_macro   0x0000000000000000       0x22 ./Core/Src/e22900t22d.o
  .debug_macro   0x0000000000000000       0x4c ./Core/Src/e22900t22d.o
@@ -997,10 +1005,10 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x6a ./Core/Src/e22900t22d.o
  .debug_macro   0x0000000000000000      0x1df ./Core/Src/e22900t22d.o
  .debug_macro   0x0000000000000000       0x10 ./Core/Src/e22900t22d.o
- .debug_line    0x0000000000000000      0x510 ./Core/Src/e22900t22d.o
- .debug_str     0x0000000000000000     0x6f2f ./Core/Src/e22900t22d.o
+ .debug_line    0x0000000000000000      0x596 ./Core/Src/e22900t22d.o
+ .debug_str     0x0000000000000000     0x702a ./Core/Src/e22900t22d.o
  .comment       0x0000000000000000       0x51 ./Core/Src/e22900t22d.o
- .debug_frame   0x0000000000000000       0x38 ./Core/Src/e22900t22d.o
+ .debug_frame   0x0000000000000000       0xc4 ./Core/Src/e22900t22d.o
  .ARM.attributes
                 0x0000000000000000       0x34 ./Core/Src/e22900t22d.o
  .group         0x0000000000000000        0xc ./Core/Src/main.o
