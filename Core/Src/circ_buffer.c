@@ -44,7 +44,7 @@ void circ_buffer_enqueue(circ_buffer_t *cb, uint8_t* data, uint8_t size)
 		// Buffer is full, do not add new element
 		return;
 	}
-	memcpy(cb->buffer[cb->end], data, size * sizeof(int));
+	memcpy(cb->buffer[cb->end], data, size * sizeof(uint8_t));
 	cb->elementSizes[cb->end] = size;
 	cb->end = (cb->end + 1) % BUFFER_SIZE;
 }

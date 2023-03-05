@@ -22,8 +22,8 @@
 #include "stdint.h"
 
 /* MACROS --------------------------------------------------------------------*/
-#define BUFFER_SIZE 		5
-#define MAX_DATA_SIZE		245
+#define BUFFER_SIZE 		245
+#define MAX_DATA_SIZE		5
 /* ENUMORATIONS --------------------------------------------------------------*/
 
 /* STRUCTURES & TYPEDEFS -----------------------------------------------------*/

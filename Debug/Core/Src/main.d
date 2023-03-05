@@ -35,7 +35,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Core/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h \
  ../Core/FreeRTOS/Source/include/mpu_wrappers.h \
  ../Core/FreeRTOS/Source/include/task.h \
- ../Core/FreeRTOS/Source/include/list.h
+ ../Core/FreeRTOS/Source/include/list.h ../Core/Src/e22900t22d.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -74,3 +74,4 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/FreeRTOS/Source/include/mpu_wrappers.h:
 ../Core/FreeRTOS/Source/include/task.h:
 ../Core/FreeRTOS/Source/include/list.h:
+../Core/Src/e22900t22d.h:

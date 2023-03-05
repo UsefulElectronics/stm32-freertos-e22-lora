@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include "FreeRTOS.h"
 #include "task.h"
+#include "e22900t22d.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,6 +53,9 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 static void led_toggle_task(void *parameter);
+static void e22_handle_task(void *parameter);
+static void main_e22_transceiverMode(void);
+static void main_e22_configurationMode(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -89,7 +93,16 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+
+  e22_lora_init(&huart2,
+		  	  	HAL_UART_Transmit_DMA,
+				HAL_UART_Receive_DMA,
+				main_e22_configurationMode,
+				main_e22_transceiverMode);
+
+
   xTaskCreate(led_toggle_task, "Toggle GPIO13", 128, NULL, 1, NULL);
+  xTaskCreate(e22_handle_task, "E22 LoRa Handler", 128 * 4, NULL, 1, NULL);
 
   vTaskStartScheduler();
   /* USER CODE END 2 */
@@ -202,7 +215,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(BOARD_LED_GPIO_Port, BOARD_LED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, M0_Pin|M2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, M0_Pin|M1_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : BOARD_LED_Pin */
   GPIO_InitStruct.Pin = BOARD_LED_Pin;
@@ -212,7 +225,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(BOARD_LED_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : M0_Pin M2_Pin */
-  GPIO_InitStruct.Pin = M0_Pin|M2_Pin;
+  GPIO_InitStruct.Pin = M0_Pin|M1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -232,6 +245,29 @@ static void led_toggle_task(void *parameter)
 
 		HAL_GPIO_TogglePin(BOARD_LED_GPIO_Port, BOARD_LED_Pin);
 	}
+}
+
+static void e22_handle_task(void *parameter)
+{
+	 TickType_t xLastWakeTime;
+	 const TickType_t xPeriod = 100;
+
+	for(;;)
+	{
+		xTaskDelayUntil( &xLastWakeTime, pdMS_TO_TICKS(xPeriod));
+
+		e22_lora_manager();
+	}
+}
+
+static void main_e22_transceiverMode(void)
+{
+	HAL_GPIO_WritePin(GPIOB, M0_Pin|M1_Pin, GPIO_PIN_RESET);
+}
+static void main_e22_configurationMode(void)
+{
+	HAL_GPIO_WritePin(GPIOB, M0_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOB, M1_Pin, GPIO_PIN_SET);
 }
 /* USER CODE END 4 */
 

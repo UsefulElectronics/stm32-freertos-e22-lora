@@ -1,7 +1,10 @@
-../Core/Src/main.c:66:5:main	16	static
-../Core/Src/main.c:112:6:SystemClock_Config	88	static
-../Core/Src/main.c:158:13:MX_USART2_UART_Init	8	static
-../Core/Src/main.c:191:13:MX_GPIO_Init	48	static
-../Core/Src/main.c:224:13:led_toggle_task	24	static
-../Core/Src/main.c:246:6:HAL_TIM_PeriodElapsedCallback	16	static
-../Core/Src/main.c:263:6:Error_Handler	4	static,ignoring_inline_asm
+../Core/Src/main.c:70:5:main	16	static
+../Core/Src/main.c:125:6:SystemClock_Config	88	static
+../Core/Src/main.c:171:13:MX_USART2_UART_Init	8	static
+../Core/Src/main.c:204:13:MX_GPIO_Init	48	static
+../Core/Src/main.c:237:13:led_toggle_task	24	static
+../Core/Src/main.c:250:13:e22_handle_task	24	static
+../Core/Src/main.c:263:13:main_e22_transceiverMode	8	static
+../Core/Src/main.c:267:13:main_e22_configurationMode	8	static
+../Core/Src/main.c:282:6:HAL_TIM_PeriodElapsedCallback	16	static
+../Core/Src/main.c:299:6:Error_Handler	4	static,ignoring_inline_asm
