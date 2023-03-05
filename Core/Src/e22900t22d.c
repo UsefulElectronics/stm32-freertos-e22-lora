@@ -81,7 +81,7 @@ void e22_lora_transnit(uint8_t *pData, uint16_t size, uint16_t address, uint8_t 
 
 	memcpy(&hE22.packet.dataBuffer, pData, size);
 
-	circ_buffer_enqueue(&hE22.txBuffer, &hE22.packet, size + overheadSize);
+	circ_buffer_enqueue(&hE22.txBuffer, (uint8_t*)&hE22.packet, size + overheadSize);
 }
 /**
  * @brief Start data reception over DMA

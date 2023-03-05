@@ -19,6 +19,8 @@
 
 /* INCLUDES ------------------------------------------------------------------*/
 #include "stdbool.h"
+#include <stdio.h>
+#include <string.h>
 
 /* MACROS --------------------------------------------------------------------*/
 #define 	MAX_DATA_PACKET_SIZE		240
