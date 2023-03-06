@@ -50,6 +50,7 @@
 void e22_lora_init( void* huart,
 					void* transmissionFunc,
 					void* receptionFunc,
+					void* receptionCallbackFunc,
 					void* configModeFunc,
 					void* TransceiverModeFunc);
 
@@ -57,7 +58,7 @@ void e22_lora_init( void* huart,
  * @brief Get data to be transmitted to the LoRa module and form the necessary packet including the target address and the communication channel
  * 		  and store the formed packet in the circular buffer.
  *
- * @param pData
+ * @param pData		:	pointer to the data to be transmitted to the module.
  *
  * @param size		:	number of bytes to be transmitted
  *
@@ -67,13 +68,6 @@ void e22_lora_init( void* huart,
  *
  */
 void e22_lora_transnit(uint8_t *pData, uint16_t size, uint16_t address, uint8_t channel);
-
-/**
- * @brief Start data reception over DMA
- *
- * @param pData	:	DMA buffer pointer
- */
-void e22_lora_startReception(uint8_t *pData);
 
 /**
  * @brief 	Store received data in the RX reception buffer.
@@ -91,7 +85,16 @@ void e22_lora_receive(uint8_t *pData, uint16_t size);
  *
  */
 void e22_lora_manager(void);
-
+/**
+ * @brief 	Make transmission line status ready at TX complete callback
+ *
+ */
+void e22_lora_make_ready(void);
+/**
+ * @brief 	this function should be called at the UART RX complete callback.
+ *
+ */
+void e22_lora_reception_complete(uint8_t size);
 
 #endif /* SRC_E22900T22D_H_ */
 

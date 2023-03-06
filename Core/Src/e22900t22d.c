@@ -29,8 +29,8 @@ typedef struct
 {
 	void*		 huart;
 	void		(*loraTransmit) 		(void *huart, const uint8_t *pData, uint16_t Size);
-	void 		(*loraReceive) 			(void *huart, uint8_t *pData, uint16_t Size);
-	void 		(*loraReceiveCallback) 	(uint8_t *pData, uint16_t Size);
+	void 		(*loraStartReception)	(void *huart, uint8_t *pData, uint16_t Size);
+	void 		(*loraReceive) 			(uint8_t *pData, uint8_t* Size);
 	void 		(*loraTransceiverMode)	(void);
 	void 		(*loraConfigurationMode)(void);
 	e22_packet_t packet;
@@ -61,11 +61,13 @@ uint8_t txDmaBuffer[MAX_DATA_PACKET_SIZE] = {0};
  * 			configuration mode function, and transceiver mode function. It also assigns DMA buffer pointers and sets the transceiver
  * 			mode as the default mode.
  *
- * @param huart				: Pointer to the UART handle used for communication with the E22 module.
+ * @param huart					: Pointer to the UART handle used for communication with the E22 module.
  *
  * @param transmissionFunc		: Pointer to the function used for transmitting data via the E22 module.
  *
- * @param receptionFunc		: Pointer to the function used for receiving data via the E22 module.
+ * @param receptionFunc			: Pointer to the function used for receiving data via the E22 module.
+ *
+ * @param receptionCallbackFunc : Pointer to the function used to send the received packet and its size to the main layer.
  *
  * @param configModeFunc		: Pointer to the function used to configure the E22 module.
  *
@@ -74,12 +76,14 @@ uint8_t txDmaBuffer[MAX_DATA_PACKET_SIZE] = {0};
 void e22_lora_init( void* huart,
 					void* transmissionFunc,
 					void* receptionFunc,
+					void* receptionCallbackFunc,
 					void* configModeFunc,
 					void* TransceiverModeFunc)
 {
 	hE22.huart 						= huart;
 	hE22.loraTransmit 				= transmissionFunc;
-	hE22.loraReceive 				= receptionFunc;
+	hE22.loraStartReception 		= receptionFunc;
+	hE22.loraReceive		 		= receptionCallbackFunc;
 	hE22.loraConfigurationMode 		= configModeFunc;
 	hE22.loraTransceiverMode		= TransceiverModeFunc;
 
@@ -118,15 +122,7 @@ void e22_lora_transnit(uint8_t *pData, uint16_t size, uint16_t address, uint8_t 
 
 	circ_buffer_enqueue(&hE22.txBuffer, (uint8_t*)&hE22.packet, size + overheadSize);
 }
-/**
- * @brief Start data reception over DMA
- *
- * @param pData	:	DMA buffer pointer
- */
-void e22_lora_startReception(uint8_t *pData)
-{
-	hE22.loraReceive(hE22.huart, pData, MAX_DATA_PACKET_SIZE);
-}
+
 /**
  * @brief 	Store received data in the RX reception buffer.
  *
@@ -163,5 +159,26 @@ void e22_lora_manager(void)
 			hE22.loraTransmit(hE22.huart, hE22.pTxDmaBuffer, packetSize);
 		}
 	}
+	//check for packet in RX circular buffer
+	if(circ_buffer_getNextSize(&hE22.rxBuffer))
+	{
+
+	}
+}
+/**
+ * @brief 	Make transmission line status ready at TX complete callback
+ *
+ */
+void e22_lora_make_ready(void)
+{
+	hE22.txPortReady = true;
+}
+/**
+ * @brief 	this function should be called at the UART RX complete callback.
+ *
+ */
+void e22_lora_reception_complete(uint8_t size)
+{
+	circ_buffer_enqueue(&hE22.rxBuffer, (uint8_t*)&hE22.pRxDmaBuffer, size);
 }
 /*************************************** USEFUL ELECTRONICS*****END OF FILE****/

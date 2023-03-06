@@ -42,6 +42,8 @@
 
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef huart2;
+DMA_HandleTypeDef hdma_usart2_rx;
+DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
 
@@ -50,12 +52,14 @@ UART_HandleTypeDef huart2;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_DMA_Init(void);
 static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 static void led_toggle_task(void *parameter);
 static void e22_handle_task(void *parameter);
 static void main_e22_transceiverMode(void);
 static void main_e22_configurationMode(void);
+static void main_lora_packet_receive(uint8_t* dataPacket, uint8_t* size);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -91,17 +95,20 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
   e22_lora_init(&huart2,
 		  	  	HAL_UART_Transmit_DMA,
-				HAL_UART_Receive_DMA,
+				HAL_UARTEx_ReceiveToIdle_DMA,
+				main_lora_packet_receive,
 				main_e22_configurationMode,
 				main_e22_transceiverMode);
 
 
   xTaskCreate(led_toggle_task, "Toggle GPIO13", 128, NULL, 1, NULL);
+
   xTaskCreate(e22_handle_task, "E22 LoRa Handler", 128 * 4, NULL, 1, NULL);
 
   vTaskStartScheduler();
@@ -197,6 +204,25 @@ static void MX_USART2_UART_Init(void)
 }
 
 /**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Stream5_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
+  /* DMA1_Stream6_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -267,7 +293,22 @@ static void main_e22_transceiverMode(void)
 static void main_e22_configurationMode(void)
 {
 	HAL_GPIO_WritePin(GPIOB, M0_Pin, GPIO_PIN_RESET);
+
 	HAL_GPIO_WritePin(GPIOB, M1_Pin, GPIO_PIN_SET);
+}
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+	e22_lora_make_ready();
+}
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+{
+	e22_lora_reception_complete(Size);
+}
+
+static void main_lora_packet_receive(uint8_t* dataPacket, uint8_t* size)
+{
+
 }
 /* USER CODE END 4 */
 
