@@ -18,19 +18,13 @@
 #include "e22900t22d.h"
 #include "circ_buffer.h"
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
-typedef struct
-{
-	uint16_t	address;
-	uint8_t 	chanel;
-	uint8_t 	dataBuffer[MAX_DATA_PACKET_SIZE];
-}e22_packet_t;
 
 typedef struct
 {
 	void*		 huart;
 	void		(*loraTransmit) 		(void *huart, const uint8_t *pData, uint16_t Size);
 	void 		(*loraStartReception)	(void *huart, uint8_t *pData, uint16_t Size);
-	void 		(*loraReceive) 			(uint8_t *pData, uint8_t* Size);
+	void 		(*loraReceive) 			(uint8_t *pData, uint8_t Size);
 	void 		(*loraTransceiverMode)	(void);
 	void 		(*loraConfigurationMode)(void);
 	e22_packet_t packet;
@@ -93,7 +87,7 @@ void e22_lora_init( void* huart,
 	//transceiver mode as default
 	hE22.loraTransceiverMode();
 
-
+	hE22.loraStartReception(hE22.huart, hE22.pRxDmaBuffer, MAX_DATA_PACKET_SIZE);
 }
 /**
  * @brief Get data to be transmitted to the LoRa module and form the necessary packet including the target address and the communication channel
@@ -113,10 +107,12 @@ void e22_lora_transnit(uint8_t *pData, uint16_t size, uint16_t address, uint8_t 
 	const uint8_t overheadSize = 3;
 
 	memset(&hE22.packet, 0, sizeof(e22_packet_t));
-
-	hE22.packet.address = address;
+	//Address 2 bytes swap
+	hE22.packet.address = (address >> 8) | (address << 8);
 
 	hE22.packet.chanel = channel;
+
+	hE22.txPortReady = true;
 
 	memcpy(&hE22.packet.dataBuffer, pData, size);
 
@@ -128,11 +124,12 @@ void e22_lora_transnit(uint8_t *pData, uint16_t size, uint16_t address, uint8_t 
  *
  * @param 	pData : data received to be stored in the corresponding circular buffer
  *
- * @param	 size : number of bytes received
+ * @param	size : number of bytes received
  */
 void e22_lora_receive(uint8_t *pData, uint16_t size)
 {
 	circ_buffer_enqueue(&hE22.rxBuffer, pData, size );
+
 }
 /**
  * @brief 	Manages the E22 LoRa module
@@ -142,12 +139,13 @@ void e22_lora_receive(uint8_t *pData, uint16_t size)
  */
 void e22_lora_manager(void)
 {
-
+	uint8_t packetSize = 0;
+	uint8_t* pPacket = NULL;
 	//check for packet in TX circular buffer
 	if(circ_buffer_getNextSize(&hE22.txBuffer))
 	{
-		uint8_t packetSize = 0;
-		uint8_t* pPacket = NULL;
+//		uint8_t packetSize = 0;
+//		uint8_t* pPacket = NULL;
 		if(hE22.txPortReady)
 		{
 			hE22.txPortReady = false;
@@ -162,7 +160,8 @@ void e22_lora_manager(void)
 	//check for packet in RX circular buffer
 	if(circ_buffer_getNextSize(&hE22.rxBuffer))
 	{
-
+		pPacket = circ_buffer_dequeue(&hE22.rxBuffer, &packetSize);
+		hE22.loraReceive(pPacket, packetSize);
 	}
 }
 /**
@@ -179,6 +178,8 @@ void e22_lora_make_ready(void)
  */
 void e22_lora_reception_complete(uint8_t size)
 {
-	circ_buffer_enqueue(&hE22.rxBuffer, (uint8_t*)&hE22.pRxDmaBuffer, size);
+	circ_buffer_enqueue(&hE22.rxBuffer, (uint8_t*)hE22.pRxDmaBuffer, size);
+	//Activate UART reception again
+	hE22.loraStartReception(hE22.huart, hE22.pRxDmaBuffer, MAX_DATA_PACKET_SIZE);
 }
 /*************************************** USEFUL ELECTRONICS*****END OF FILE****/

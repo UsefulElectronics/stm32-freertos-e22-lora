@@ -57,9 +57,10 @@ static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 static void led_toggle_task(void *parameter);
 static void e22_handle_task(void *parameter);
+static void e22_transmission_task(void *parameter);
 static void main_e22_transceiverMode(void);
 static void main_e22_configurationMode(void);
-static void main_lora_packet_receive(uint8_t* dataPacket, uint8_t* size);
+static void main_lora_packet_receive(uint8_t* dataPacket, uint8_t size);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -80,7 +81,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+//  HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -89,6 +90,7 @@ int main(void)
   /* Configure the system clock */
   SystemClock_Config();
 
+  HAL_Init();
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */
@@ -110,6 +112,8 @@ int main(void)
   xTaskCreate(led_toggle_task, "Toggle GPIO13", 128, NULL, 1, NULL);
 
   xTaskCreate(e22_handle_task, "E22 LoRa Handler", 128 * 4, NULL, 1, NULL);
+
+  xTaskCreate(e22_transmission_task, "E22 LoRa Tx Task", 128 * 4, NULL, 1, NULL);
 
   vTaskStartScheduler();
   /* USER CODE END 2 */
@@ -269,7 +273,7 @@ static void led_toggle_task(void *parameter)
 	{
 		xTaskDelayUntil( &xLastWakeTime, pdMS_TO_TICKS(xPeriod));
 
-		HAL_GPIO_TogglePin(BOARD_LED_GPIO_Port, BOARD_LED_Pin);
+//		HAL_GPIO_TogglePin(BOARD_LED_GPIO_Port, BOARD_LED_Pin);
 	}
 }
 
@@ -283,6 +287,21 @@ static void e22_handle_task(void *parameter)
 		xTaskDelayUntil( &xLastWakeTime, pdMS_TO_TICKS(xPeriod));
 
 		e22_lora_manager();
+	}
+}
+
+static void e22_transmission_task(void *parameter)
+{
+	 TickType_t xLastWakeTime;
+	 const TickType_t xPeriod = 1000;
+
+	 const uint8_t packet[5] = "ping";
+
+	for(;;)
+	{
+		xTaskDelayUntil( &xLastWakeTime, pdMS_TO_TICKS(xPeriod));
+
+		e22_lora_transnit(packet, 4, 9, 18);
 	}
 }
 
@@ -305,10 +324,25 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
 	e22_lora_reception_complete(Size);
 }
-
-static void main_lora_packet_receive(uint8_t* dataPacket, uint8_t* size)
+/**
+ * @brief 	This function is a callback to receives a LoRa packet by copying it from the data packet buffer to the local LoRa packet buffer. It then
+ * 			copies the LoRa packet to the main layer.
+ *
+ * @param 	dataPacket	:	dataPacket Pointer to the buffer containing the received data packet.
+ *
+ * @param 	size		:	size of the received data packet.
+ */
+static void main_lora_packet_receive(uint8_t* dataPacket, uint8_t size)
 {
+	uint8_t loraPacket[MAX_DATA_PACKET_SIZE] = {0};
+	//Copy data to the main layer
+	memcpy(&loraPacket, dataPacket, size);
+	// TODO: implement main layer packet handling
 
+	if(0 == memcmp(loraPacket, "pong", size))
+	{
+		HAL_GPIO_TogglePin(BOARD_LED_GPIO_Port, BOARD_LED_Pin);
+	}
 }
 /* USER CODE END 4 */
 
@@ -325,9 +359,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 0 */
 
   /* USER CODE END Callback 0 */
-  if (htim->Instance == TIM10) {
-    HAL_IncTick();
-  }
+	if (htim->Instance == TIM10)
+	{
+		HAL_IncTick();
+	}
   /* USER CODE BEGIN Callback 1 */
 
   /* USER CODE END Callback 1 */

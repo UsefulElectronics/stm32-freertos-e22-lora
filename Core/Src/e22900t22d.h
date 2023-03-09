@@ -27,6 +27,12 @@
 /* ENUMORATIONS --------------------------------------------------------------*/
 
 /* STRUCTURES & TYPEDEFS -----------------------------------------------------*/
+typedef struct
+{
+	uint16_t	address;
+	uint8_t 	chanel;
+	uint8_t 	dataBuffer[MAX_DATA_PACKET_SIZE];
+}e22_packet_t;
 
 /* VARIABLES -----------------------------------------------------------------*/
 
