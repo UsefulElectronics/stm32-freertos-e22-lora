@@ -100,7 +100,7 @@ int main(void)
   MX_DMA_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  //Initialize e22 LoRa module
   e22_lora_init(&huart2,
 		  	  	HAL_UART_Transmit_DMA,
 				HAL_UARTEx_ReceiveToIdle_DMA,
@@ -109,6 +109,7 @@ int main(void)
 				main_e22_transceiverMode);
 
 
+  //Start FreeRTOS task creation
   xTaskCreate(led_toggle_task, "Toggle GPIO13", 128, NULL, 1, NULL);
 
   xTaskCreate(e22_handle_task, "E22 LoRa Handler", 128 * 4, NULL, 1, NULL);
@@ -116,6 +117,8 @@ int main(void)
   xTaskCreate(e22_transmission_task, "E22 LoRa Tx Task", 128 * 4, NULL, 1, NULL);
 
   vTaskStartScheduler();
+
+  //The rest is not executed.
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -276,7 +279,9 @@ static void led_toggle_task(void *parameter)
 //		HAL_GPIO_TogglePin(BOARD_LED_GPIO_Port, BOARD_LED_Pin);
 	}
 }
-
+/**
+ * @brief 	LoRa module manager task
+ */
 static void e22_handle_task(void *parameter)
 {
 	 TickType_t xLastWakeTime;
@@ -289,37 +294,64 @@ static void e22_handle_task(void *parameter)
 		e22_lora_manager();
 	}
 }
-
+/**
+ * @brief 	LoRa Packet transmission task
+ */
 static void e22_transmission_task(void *parameter)
 {
 	 TickType_t xLastWakeTime;
 	 const TickType_t xPeriod = 1000;
 
-	 const uint8_t packet[5] = "ping";
+	 const packetSize = 4;
+
+	 const receiverAddress = 0x09;
+
+	 const ComChannel = 0x12;
+
+	 uint8_t packet[5] = "ping";
 
 	for(;;)
 	{
 		xTaskDelayUntil( &xLastWakeTime, pdMS_TO_TICKS(xPeriod));
 
-		e22_lora_transnit(packet, 4, 9, 18);
+		e22_lora_transnit(packet, packetSize, receiverAddress, ComChannel);
 	}
 }
-
+/**
+ * @brief 	LoRa module transceiver mode selection.  when this mode is active, the module configuration can't be modified.
+ *
+ */
 static void main_e22_transceiverMode(void)
 {
 	HAL_GPIO_WritePin(GPIOB, M0_Pin|M1_Pin, GPIO_PIN_RESET);
 }
+/**
+ * @brief 	LoRa module config mode selection. when this mode is active, wireless communication is inactive.
+ *
+ */
 static void main_e22_configurationMode(void)
 {
 	HAL_GPIO_WritePin(GPIOB, M0_Pin, GPIO_PIN_RESET);
 
 	HAL_GPIO_WritePin(GPIOB, M1_Pin, GPIO_PIN_SET);
 }
-
+/**
+ * @brief 	UART data transmission complete callback over DMA
+ *
+ * @param 	huart	:	Pointer to the UART handler
+ */
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
+	//Change the TX line state to ready
 	e22_lora_make_ready();
 }
+/**
+ * @brief 	UART data reception complete callback over DMA
+ *
+ * @param 	huart	:	Pointer to the UART handler
+ *
+ * @param 	Size	:	Packet size received over UART
+ */
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
 	e22_lora_reception_complete(Size);
