@@ -302,11 +302,11 @@ static void e22_transmission_task(void *parameter)
 	 TickType_t xLastWakeTime;
 	 const TickType_t xPeriod = 1000;
 
-	 const packetSize = 4;
+	 const uint8_t packetSize = 4;
 
-	 const receiverAddress = 0x09;
+	 const uint8_t receiverAddress = 0x09;
 
-	 const ComChannel = 0x12;
+	 const uint8_t ComChannel = 0x12;
 
 	 uint8_t packet[5] = "ping";
 

@@ -5,7 +5,7 @@
 ../Core/Src/main.c:237:13:MX_GPIO_Init	48	static
 ../Core/Src/main.c:270:13:led_toggle_task	24	static
 ../Core/Src/main.c:285:13:e22_handle_task	24	static
-../Core/Src/main.c:300:13:e22_transmission_task	48	static
+../Core/Src/main.c:300:13:e22_transmission_task	40	static
 ../Core/Src/main.c:324:13:main_e22_transceiverMode	8	static
 ../Core/Src/main.c:332:13:main_e22_configurationMode	8	static
 ../Core/Src/main.c:343:6:HAL_UART_TxCpltCallback	16	static
