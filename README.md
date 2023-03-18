@@ -8,9 +8,9 @@ Tutorial Series Sponsor PCBWay Website. You can get extra free coupons using the
 [<img src="https://github.com/UsefulElectronics/esp32s3-gc9a01-lvgl/blob/main/banner/banner(320x100).gif">](https://www.pcbway.com/setinvite.aspx?inviteid=582640)
 
 ### Fixaj
-[<img src="https://github.com/UsefulElectronics/stm32-freertos-e22-lora/blob/main/banner/cropped-fixaj-logo-1.png">](https://shop.fixaj.com/e22-900t22d-7km-menzilli-900mhz-sx1262-lora-modulu)
 E22900T22D Module purchase link:
 https://shop.fixaj.com/e22-900t22d-7km-menzilli-900mhz-sx1262-lora-modulu
+[<img src="https://github.com/UsefulElectronics/stm32-freertos-e22-lora/blob/main/banner/cropped-fixaj-logo-1.png">](https://shop.fixaj.com/e22-900t22d-7km-menzilli-900mhz-sx1262-lora-modulu)
 ***
 
 
